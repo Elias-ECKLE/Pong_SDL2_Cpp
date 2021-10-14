@@ -1,0 +1,2 @@
+﻿  main.cpp
+D:\AlgoRacineF2\C++\Exercices\TP\TP_PongSDL2\TP_Pong_SDL2\TP_Pong_SDL2\main.cpp(2,10): fatal error C1083: Impossible d'ouvrir le fichier include : 'SDL.h' : No such file or directory
