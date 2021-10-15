@@ -9,6 +9,8 @@ CJoueur::CJoueur()
 	this->taille.w = 0;
 	this->taille.h = 0;
 	this->control = none;
+
+	this->rectJoueur = { this->position.x,this->position.y, this->taille.w, this->taille.h };
 	this->pSurfaceJoueur = NULL;
 	this->pTextureJoueur = NULL;
 }
@@ -22,6 +24,8 @@ CJoueur::CJoueur(int x, int y, int w, int h)
 	this->taille.w = w;
 	this->taille.h = h;
 	this->control = none;
+
+	this->rectJoueur = { this->position.x,this->position.y, this->taille.w, this->taille.h };
 	this->pSurfaceJoueur = NULL;
 	this->pTextureJoueur = NULL;
 
@@ -68,6 +72,11 @@ controller CJoueur::getControl()
 	return this->control;
 }
 
+SDL_Rect CJoueur::getRectJoueur()
+{
+	return this->rectJoueur;
+}
+
 SDL_Surface* CJoueur::getPSurfaceJoueur()
 {
 	return this->pSurfaceJoueur;
@@ -96,6 +105,11 @@ void CJoueur::setTaille(dimensions taille)
 void CJoueur::setControl(controller controls)
 {
 	this->control = controls;
+}
+
+void CJoueur::setRectJoueur(SDL_Rect rect)
+{
+	this->rectJoueur = rect;
 }
 
 void CJoueur::setPSurfaceJoueur(SDL_Surface* surfaceJ)
@@ -130,6 +144,7 @@ int CJoueur::createTexture(char* cheminIMG, SDL_Renderer* pRenderer)
 		}
 	}
 	SDL_Rect dst_IMG = { this->position.x,this->position.y, this->taille.w, this->taille.h };
+	this->rectJoueur = dst_IMG;
 	SDL_RenderCopy(pRenderer, pTextureJoueur, NULL, &dst_IMG);
 
 	return 0;

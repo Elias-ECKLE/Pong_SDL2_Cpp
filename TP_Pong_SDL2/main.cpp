@@ -38,13 +38,13 @@ int main(int argc, char** argv)
 
 
     //_________________________________GENERATION DE LA BALLE______________________________________
-    CBalle balle(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, WIDTHBALLE, HEIGHTBALLE);
+    CBalle balle(WINDOW_WIDTH / 2 - WIDTHBALLE / 2, WINDOW_HEIGHT / 2, WIDTHBALLE, HEIGHTBALLE, VITESSE_BALLE);
 
     char* pCheminIMGBalle = new char[TAILLE];
     strcpy_s(pCheminIMGBalle, TAILLE, CHEMIN_SPRITE_BALLE);
 
     
-    //______________________________AFFICHAGE DU RENDU UNE FOIS LA PARTIE INIT TERMINEE
+
 
 
 
@@ -57,18 +57,31 @@ int main(int argc, char** argv)
     int nb = 1;
 
 
+
     do
     {
         frameStart = SDL_GetTicks();
-        
+
+        fenetre.createTerrain();
+        J1.createTexture(pCheminIMG1, fenetre.getPRenderer());
+        J2.createTexture(pCheminIMG2, fenetre.getPRenderer());
+
+        balle.createTexture(pCheminIMGBalle, fenetre.getPRenderer());
+        balle.checkLimitsBalle(WINDOW_HEIGHT,SEPARATE_PIXELS_LIMITS);
+        balle.dplt(colD_C);
+
+        SDL_Rect rect1 = J1.getRectJoueur();
+        SDL_Rect rect2 = balle.getRectBalle();
+
+        if (SDL_HasIntersection(&rect1,&rect2)){
+            cout<<"collision"<<endl;
+        }
+
+        fenetre.affichRendu();
 
         while (SDL_PollEvent(&events))
         {
-            fenetre.createTerrain();
-            J1.createTexture(pCheminIMG1, fenetre.getPRenderer());
-            J2.createTexture(pCheminIMG2, fenetre.getPRenderer());
-            balle.createTexture(pCheminIMGBalle, fenetre.getPRenderer());
-            fenetre.affichRendu();
+
 
 
             switch (events.type)
@@ -125,9 +138,9 @@ int main(int argc, char** argv)
             }
             */
 
-            fenetre.nettoyerEcran();
+       
         }
-
+        fenetre.nettoyerEcran();
    
         frameTime = SDL_GetTicks() - frameStart;
 

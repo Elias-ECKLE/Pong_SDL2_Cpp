@@ -15,6 +15,7 @@ protected:
 	dimensions taille;
 	controller control;
 
+	SDL_Rect rectJoueur;
 	SDL_Surface *pSurfaceJoueur;
 	SDL_Texture *pTextureJoueur;
 
@@ -37,6 +38,7 @@ public:
 	coords getPos();
 	dimensions getTaille();
 	controller getControl();
+	SDL_Rect getRectJoueur();
 	SDL_Surface* getPSurfaceJoueur();
 	SDL_Texture* getPTextureJoueur();
 
@@ -45,6 +47,7 @@ public:
 	void setPos(coords position);
 	void setTaille(dimensions taille);
 	void setControl(controller controls);
+	void setRectJoueur(SDL_Rect rect);
 	void setPSurfaceJoueur(SDL_Surface* surfaceJ);
 	void setPTextureJoueur(SDL_Texture* tectureJ);
 

@@ -14,8 +14,9 @@
 #define FPS 60
 #define MS 1000
 
-//delta de pixels entre chaque point dans le filet du terrain
+//delta de pixels entre chaque point dans le filet du terrain et séparation limite balle
 #define SEPARATE_PIXELS 4
+#define SEPARATE_PIXELS_LIMITS 20
 
 #define TITRE_FENETRE "Pong"
 #define CHEMIN_SPRITE_JOUEUR1 "../Images/barreJ1.png"
@@ -28,8 +29,10 @@
 #define SEPARATE_BORDSJ1 20
 #define SEPARATE_BORDSJ2 43
 #define VITESSEDEPLT 13
-#define WIDTHBALLE 46
-#define HEIGHTBALLE 46
+#define VITESSE_BALLE 2
+#define WIDTHBALLE 25
+#define HEIGHTBALLE 25
+
 
 // taille pour allouer de l'espace à des chaînes de caractères déclarés sous forme de char*
 #define TAILLE 30 
@@ -59,3 +62,14 @@ typedef enum controller {
 
 }controller;
 
+typedef enum collider {
+
+	colG_H=1,
+	colG_C,
+	colG_B,
+	colD_H,
+	colD_C,
+	colD_B,
+	noneCol
+
+}collider;
