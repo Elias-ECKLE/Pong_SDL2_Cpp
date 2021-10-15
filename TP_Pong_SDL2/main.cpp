@@ -55,7 +55,7 @@ int main(int argc, char** argv)
     Uint32 frameStart;
     int frameTime;
     int nb = 1;
-
+    collider collision = colD_C;
 
 
     do
@@ -68,14 +68,50 @@ int main(int argc, char** argv)
 
         balle.createTexture(pCheminIMGBalle, fenetre.getPRenderer());
         balle.checkLimitsBalle(WINDOW_HEIGHT,SEPARATE_PIXELS_LIMITS);
-        balle.dplt(colD_C);
+        
+
 
         SDL_Rect rect1 = J1.getRectJoueur();
-        SDL_Rect rect2 = balle.getRectBalle();
+        SDL_Rect rect2 = J2.getRectJoueur();
+        SDL_Rect rect3 = balle.getRectBalle();
+        int balleYCentre = balle.getYPos() + balle.getHTaille() / 2;
+        int J1_YCentre = J1.getYPos() + J1.getHTaille() / 2;
 
-        if (SDL_HasIntersection(&rect1,&rect2)){
-            cout<<"collision"<<endl;
+        if (SDL_HasIntersection(&rect1,&rect3)){
+            if (balleYCentre < J1_YCentre && balleYCentre>=J1.getYPos()) {
+                collision=colG_H;
+                cout << "collisionJ1_G_H" << endl;
+            }
+            if (balleYCentre == J1_YCentre) {
+                collision=colG_C;
+                cout << "collisionJ1_G_C" << endl;
+            }
+            if (balleYCentre>J1_YCentre&& balleYCentre<=J1.getYPos()+J1.getHTaille()) {
+                collision=colG_B;
+                cout << "collisionJ1_G_B" << endl;
+            }
         }
+        if (SDL_HasIntersection(&rect2, &rect3)) {
+            if (balleYCentre < J1_YCentre && balleYCentre >= J2.getYPos()) {
+                collision = colD_H;
+                cout << "collisionJ2_D_H" << endl;
+            }
+            if (balleYCentre == J1_YCentre) {
+                collision = colD_C;
+                cout << "collisionJ2_D_C" << endl;
+            }
+            if (balleYCentre > J1_YCentre && balleYCentre <= J2.getYPos() + J2.getHTaille()) {
+                collision = colD_B;
+                cout << "collisionJ2_D_B" << endl;
+            }
+        }
+
+        balle.dplt(collision);
+        //si la balle sort du terrain on la respawn
+        balle.respawnBalle(pCheminIMGBalle, fenetre.getPRenderer(), WINDOW_WIDTH,WINDOW_HEIGHT);
+
+
+
 
         fenetre.affichRendu();
 

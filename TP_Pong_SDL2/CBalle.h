@@ -32,7 +32,11 @@ public:
 
 	//accesseurs :
 	coords getPos();
+	int getXPos();
+	int getYPos();
 	dimensions getTaille();
+	int getWTaille();
+	int getHTaille();
 	SDL_Rect getRectBalle();
 	SDL_Surface* getPSurfaceBalle();
 	SDL_Texture* getPTextureBalle();
@@ -46,6 +50,7 @@ public:
 
 	//methodes :
 	int createTexture(char* cheminIMG, SDL_Renderer* pRenderer);
+	int respawnBalle(char* cheminIMG, SDL_Renderer* pRenderer, int nb_WindowWidth, int nb_WindowHeight);
 	void dpltGauche();
 	void dpltDroite();
 	void dpltGauche_B();

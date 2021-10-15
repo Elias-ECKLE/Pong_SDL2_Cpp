@@ -13,6 +13,7 @@ CVue::CVue()
 
     this->nb_fps = 60;
     this->nb_frameDelay = 1000 / FPS;
+    this->beginPlay = false;
     
     this->pWindow = NULL;
     this->pRenderer = NULL;
@@ -27,6 +28,7 @@ CVue::CVue(int nb_windowHeight, int nb_windowWidth, int nb_SeparatPixels, int nb
 
     this->nb_fps = nb_fps;
     this->nb_frameDelay = nb_ms / FPS;
+    this->beginPlay = false;
 
     this->pWindow = NULL;
     this->pRenderer = NULL;
@@ -43,6 +45,7 @@ CVue::CVue(CVue& vue)
 
    this->nb_fps = vue.nb_fps;
    this->nb_frameDelay = vue.nb_frameDelay;
+   this->beginPlay = vue.beginPlay;
 
    this->isOpen= vue.isOpen;
    this->pRenderer= vue.pRenderer;
@@ -101,6 +104,11 @@ int CVue::getNb_WindowWidth() const
     return this->nb_windowWidth;
 }
 
+bool CVue::getBeginPlay() const
+{
+    return this->beginPlay;
+}
+
 
 //mutateurs :
 
@@ -127,6 +135,11 @@ void CVue::setNb_WindowHeight(int windowHeight)
 void CVue::setNb_WindowWidth(int windowWidth)
 {
     this->nb_windowWidth = windowWidth;
+}
+
+void CVue::setBeginPlay(bool isBeginPlay)
+{
+    this->beginPlay = isBeginPlay;
 }
 
 

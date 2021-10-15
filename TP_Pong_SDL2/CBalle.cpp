@@ -34,6 +34,7 @@ CBalle::CBalle(int x, int y, int w, int h, int v)
 CBalle::~CBalle()
 {
 	if (this->pTextureBalle) {
+		SDL_FreeSurface(this->pSurfaceBalle);
 		SDL_DestroyTexture(this->pTextureBalle);
 	}
 	cout << "Destruction CJoueur faite" << endl;
@@ -44,9 +45,29 @@ coords CBalle::getPos()
 	return this->position;
 }
 
+int CBalle::getXPos()
+{
+	return this->position.x;
+}
+
+int CBalle::getYPos()
+{
+	return this->position.y;
+}
+
 dimensions CBalle::getTaille()
 {
 	return this->taille;
+}
+
+int CBalle::getWTaille()
+{
+	return this->taille.w;
+}
+
+int CBalle::getHTaille()
+{
+	return this->taille.h;
 }
 
 SDL_Rect CBalle::getRectBalle()
@@ -103,7 +124,6 @@ int CBalle::createTexture(char* cheminIMG, SDL_Renderer* pRenderer)
 	}
 	else {
 		this->pTextureBalle = SDL_CreateTextureFromSurface(pRenderer, pSurfaceBalle);
-		SDL_FreeSurface(this->pSurfaceBalle);
 
 		if (!this->pTextureBalle) {
 			SDL_Log("Unable SDL_CreatetextureFromSurface %s", SDL_GetError());
@@ -115,6 +135,23 @@ int CBalle::createTexture(char* cheminIMG, SDL_Renderer* pRenderer)
 	SDL_RenderCopy(pRenderer, pTextureBalle, NULL, &rectBalle);
 
 	return 0;
+}
+
+int CBalle::respawnBalle(char* cheminIMG, SDL_Renderer* pRenderer, int nb_WindowWidth, int nb_WindowHeight)
+{
+
+	int returnError = 0;
+	//si la balle sort du terrain alors on respawn
+	if (this->position.x+this->taille.w/2 <0 || this->position.x + this->taille.w / 2 > nb_WindowWidth) {
+
+		returnError = this->createTexture(cheminIMG, pRenderer);
+		this->position.x = nb_WindowWidth/2-this->taille.w/2;
+		this->position.y = nb_WindowHeight / 2-this->taille.h/2;
+		cout << "respawn balle" << endl;
+
+	}
+
+	return returnError;
 }
 
 void CBalle::dpltGauche()

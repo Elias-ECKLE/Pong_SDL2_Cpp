@@ -16,6 +16,7 @@ private:
 protected:
 	int nb_windowHeight;
 	int nb_windowWidth;
+	bool beginPlay;
 
 	int nb_fps;
 	int nb_frameDelay;
@@ -46,6 +47,7 @@ public:
 	int getNb_Fps()const;
 	int getNb_FrameDelay()const;
 	int getNb_WindowWidth()const;
+	bool getBeginPlay()const;
 
 
 	//mutateurs 
@@ -54,6 +56,7 @@ public:
 	void setIsOpen(SDL_bool open);
 	void setNb_WindowHeight(int windowHeight);
 	void setNb_WindowWidth(int windowWidth);
+	void setBeginPlay(bool isBeginPlay);
 
 
 	//methodes :

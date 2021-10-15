@@ -39,6 +39,8 @@ CJoueur::CJoueur(CJoueur& joueur)
 	this->taille.w = joueur.taille.w;
 	this->taille.h = joueur.taille.h;
 	this->control = none;
+
+	this->rectJoueur = joueur.rectJoueur;
 	this->pSurfaceJoueur = joueur.pSurfaceJoueur;
 	this->pTextureJoueur = joueur.pTextureJoueur;
 }
@@ -62,9 +64,29 @@ coords CJoueur::getPos()
 	return this->position;
 }
 
+int CJoueur::getXPos()
+{
+	return this->position.x;
+}
+
+int CJoueur::getYPos()
+{
+	return this->position.y;
+}
+
 dimensions CJoueur::getTaille()
 {
 	return this->taille;
+}
+
+int CJoueur::getWTaille()
+{
+	return this->taille.w;
+}
+
+int CJoueur::getHTaille()
+{
+	return this->taille.h;
 }
 
 controller CJoueur::getControl()
@@ -164,6 +186,13 @@ void CJoueur::depltBas(int vitesse,int nb_WindowHeight)
 		this->position.y = this->position.y+vitesse;
 	}
 	
+}
+
+void CJoueur::collision()
+{
+	if (this->position.y-this->taille.h/2) {
+
+	}
 }
 
 

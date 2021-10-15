@@ -28,10 +28,10 @@
 #define HEIGHTJOUEUR 98
 #define SEPARATE_BORDSJ1 20
 #define SEPARATE_BORDSJ2 43
-#define VITESSEDEPLT 13
+#define VITESSEDEPLT 15
 #define VITESSE_BALLE 2
-#define WIDTHBALLE 25
-#define HEIGHTBALLE 25
+#define WIDTHBALLE 15
+#define HEIGHTBALLE 15
 
 
 // taille pour allouer de l'espace à des chaînes de caractères déclarés sous forme de char*

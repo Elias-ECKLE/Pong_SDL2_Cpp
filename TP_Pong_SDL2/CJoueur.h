@@ -36,7 +36,11 @@ public:
 	//accesseurs :
 	int getNbScore();
 	coords getPos();
+	int getXPos();
+	int getYPos();
 	dimensions getTaille();
+	int getWTaille();
+	int getHTaille();
 	controller getControl();
 	SDL_Rect getRectJoueur();
 	SDL_Surface* getPSurfaceJoueur();
@@ -56,7 +60,7 @@ public:
 	int createTexture(char* cheminIMG, SDL_Renderer* pRenderer);
 	void depltHaut(int vitesse);
 	void depltBas(int vitesse,int nb_WindowHeight);
-
+	void collision();
 	
 
 };
