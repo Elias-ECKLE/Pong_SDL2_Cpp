@@ -8,7 +8,8 @@ CJoueur::CJoueur()
 
 	this->taille.w = 0;
 	this->taille.h = 0;
-	this->control = none;
+	this->control = controller::idle;
+	//this->collisionJoueurBalle = collider::none;
 
 	this->rectJoueur = { this->position.x,this->position.y, this->taille.w, this->taille.h };
 	this->pSurfaceJoueur = NULL;
@@ -23,7 +24,8 @@ CJoueur::CJoueur(int x, int y, int w, int h)
 
 	this->taille.w = w;
 	this->taille.h = h;
-	this->control = none;
+	this->control = controller::idle;
+	//this->collisionJoueurBalle = collider::none;
 
 	this->rectJoueur = { this->position.x,this->position.y, this->taille.w, this->taille.h };
 	this->pSurfaceJoueur = NULL;
@@ -38,7 +40,7 @@ CJoueur::CJoueur(CJoueur& joueur)
 	this->position.y = joueur.position.y;
 	this->taille.w = joueur.taille.w;
 	this->taille.h = joueur.taille.h;
-	this->control = none;
+	this->control=joueur.control;
 
 	this->rectJoueur = joueur.rectJoueur;
 	this->pSurfaceJoueur = joueur.pSurfaceJoueur;
@@ -93,6 +95,7 @@ controller CJoueur::getControl()
 {
 	return this->control;
 }
+
 
 SDL_Rect CJoueur::getRectJoueur()
 {
@@ -172,6 +175,22 @@ int CJoueur::createTexture(char* cheminIMG, SDL_Renderer* pRenderer)
 	return 0;
 }
 
+void CJoueur::handleEvent(controller controls,  int vitesse, int nb_WindowHeight)
+{
+
+	this->control=controls;
+
+	if (this->control == controller::up) {
+		depltHaut(vitesse);
+	}
+	else if (this->control == controller::down) {
+		depltBas(vitesse, nb_WindowHeight);
+	}
+	else {
+		this->control=controller::idle;
+	}
+}
+
 void CJoueur::depltHaut(int vitesse)
 {
 	if (this->position.y>0) {
@@ -188,12 +207,10 @@ void CJoueur::depltBas(int vitesse,int nb_WindowHeight)
 	
 }
 
-void CJoueur::collision()
+void CJoueur::addScore(int ptScore)
 {
-	if (this->position.y-this->taille.h/2) {
-
-	}
+	this->nb_score += ptScore;
+	cout << nb_score << endl;
 }
-
 
 

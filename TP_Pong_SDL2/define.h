@@ -10,6 +10,10 @@
 #define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 600
 
+//MAX SCORE 
+#define MAX_SCORE 12
+#define COEFF_SCORE 1
+
 //FPS 
 #define FPS 60
 #define MS 1000
@@ -52,24 +56,6 @@ typedef struct dimensions {
 	int h;
 }dimensions;
 
-typedef enum controller {
+enum class controller { up = 1, down=2, idle=0 };
 
-    upJ1 = 1,
-	downJ1,
-	upJ2,
-	downJ2,
-	none
-
-}controller;
-
-typedef enum collider {
-
-	colG_H=1,
-	colG_C,
-	colG_B,
-	colD_H,
-	colD_C,
-	colD_B,
-	noneCol
-
-}collider;
+enum class collider {col_H = 1 ,col_C, col_B, none=0};

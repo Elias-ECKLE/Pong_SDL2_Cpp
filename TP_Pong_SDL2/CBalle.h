@@ -1,6 +1,7 @@
 #pragma once
 #include "define.h"
 #include "CVue.h"
+#include "CJoueur.h"
 
 
 class CBalle {
@@ -10,11 +11,13 @@ private :
 
 protected:
 
+
 	int vitesseDplt;
 	int vitesseDpltVertical;
 
 	coords position;
 	dimensions taille;
+	collider collisionBalleJoueur;
 
 	SDL_Rect rectBalle;
 	SDL_Surface* pSurfaceBalle;
@@ -38,6 +41,7 @@ public:
 	int getWTaille();
 	int getHTaille();
 	SDL_Rect getRectBalle();
+	collider GetColBalleJoueur();
 	SDL_Surface* getPSurfaceBalle();
 	SDL_Texture* getPTextureBalle();
 
@@ -48,17 +52,24 @@ public:
 	void setPSurfaceBalle(SDL_Surface* surface);
 	void setPTextureBalle(SDL_Texture* texture);
 
+
 	//methodes :
 	int createTexture(char* cheminIMG, SDL_Renderer* pRenderer);
-	int respawnBalle(char* cheminIMG, SDL_Renderer* pRenderer, int nb_WindowWidth, int nb_WindowHeight);
-	void dpltGauche();
-	void dpltDroite();
-	void dpltGauche_B();
-	void dpltGauche_H();
-	void dpltDroite_B();
-	void dpltDroite_H();
+
+
+	collider collision(CJoueur& joueur1, CJoueur& joueur2);
+	void dpltCollision();
+	void inversDirection();
 	void checkLimitsBalle(int nb_windowHeight, int nb_separatePixels);
-	void dplt(collider collision);
+	void dpltB();
+	void dpltH();
+	void dpltG_D();
+
+	void butJoueur(CJoueur& J1, CJoueur& J2, int ptScore, int nb_WindowWidth, int nb_WindowHeight);
+	int respawnBalle(char* cheminIMG, SDL_Renderer* pRenderer, int nb_WindowWidth, int nb_WindowHeight);
+
+
+	
 
 
 

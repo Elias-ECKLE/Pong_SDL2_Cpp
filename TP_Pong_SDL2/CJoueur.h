@@ -1,6 +1,7 @@
 #pragma once
 #include "define.h"
 #include "CVue.h"
+//#include "CBalle.h"
 
 //une classe pour le joueur
 
@@ -10,10 +11,12 @@ private:
 
 
 protected:
+
 	int nb_score;
 	coords position;
 	dimensions taille;
 	controller control;
+	//collider collisionJoueurBalle;
 
 	SDL_Rect rectJoueur;
 	SDL_Surface *pSurfaceJoueur;
@@ -22,6 +25,7 @@ protected:
 
 
 public:
+
 
 	//constructeur :
 	CJoueur();
@@ -42,6 +46,7 @@ public:
 	int getWTaille();
 	int getHTaille();
 	controller getControl();
+	//collider getCollision();
 	SDL_Rect getRectJoueur();
 	SDL_Surface* getPSurfaceJoueur();
 	SDL_Texture* getPTextureJoueur();
@@ -58,9 +63,12 @@ public:
 
 	//methodes :
 	int createTexture(char* cheminIMG, SDL_Renderer* pRenderer);
+	void handleEvent(controller controls,int vitesse, int nb_WindowHeight);
 	void depltHaut(int vitesse);
 	void depltBas(int vitesse,int nb_WindowHeight);
-	void collision();
+	
+	void addScore(int ptScore);
+
 	
 
 };

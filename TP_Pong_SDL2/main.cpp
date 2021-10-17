@@ -43,6 +43,8 @@ int main(int argc, char** argv)
     char* pCheminIMGBalle = new char[TAILLE];
     strcpy_s(pCheminIMGBalle, TAILLE, CHEMIN_SPRITE_BALLE);
 
+
+
     
 
 
@@ -54,9 +56,8 @@ int main(int argc, char** argv)
     SDL_Event events;
     Uint32 frameStart;
     int frameTime;
-    int nb = 1;
-    collider collision = colD_C;
-
+    //int nb = 1;
+    balle.inversDirection();
 
     do
     {
@@ -67,46 +68,16 @@ int main(int argc, char** argv)
         J2.createTexture(pCheminIMG2, fenetre.getPRenderer());
 
         balle.createTexture(pCheminIMGBalle, fenetre.getPRenderer());
-        balle.checkLimitsBalle(WINDOW_HEIGHT,SEPARATE_PIXELS_LIMITS);
-        
 
 
-        SDL_Rect rect1 = J1.getRectJoueur();
-        SDL_Rect rect2 = J2.getRectJoueur();
-        SDL_Rect rect3 = balle.getRectBalle();
-        int balleYCentre = balle.getYPos() + balle.getHTaille() / 2;
-        int J1_YCentre = J1.getYPos() + J1.getHTaille() / 2;
+        //on regarde s'il y a une collision 
+        balle.collision(J1, J2);
+        //selon le résultat on déplace la balle et on check si la balle n'atteint pas les deux bords horizontaux, si oui on inverse sa diretion sur l'axe vertical
+        balle.checkLimitsBalle(WINDOW_HEIGHT, SEPARATE_PIXELS_LIMITS);
+        balle.dpltCollision();
 
-        if (SDL_HasIntersection(&rect1,&rect3)){
-            if (balleYCentre < J1_YCentre && balleYCentre>=J1.getYPos()) {
-                collision=colG_H;
-                cout << "collisionJ1_G_H" << endl;
-            }
-            if (balleYCentre == J1_YCentre) {
-                collision=colG_C;
-                cout << "collisionJ1_G_C" << endl;
-            }
-            if (balleYCentre>J1_YCentre&& balleYCentre<=J1.getYPos()+J1.getHTaille()) {
-                collision=colG_B;
-                cout << "collisionJ1_G_B" << endl;
-            }
-        }
-        if (SDL_HasIntersection(&rect2, &rect3)) {
-            if (balleYCentre < J1_YCentre && balleYCentre >= J2.getYPos()) {
-                collision = colD_H;
-                cout << "collisionJ2_D_H" << endl;
-            }
-            if (balleYCentre == J1_YCentre) {
-                collision = colD_C;
-                cout << "collisionJ2_D_C" << endl;
-            }
-            if (balleYCentre > J1_YCentre && balleYCentre <= J2.getYPos() + J2.getHTaille()) {
-                collision = colD_B;
-                cout << "collisionJ2_D_B" << endl;
-            }
-        }
-
-        balle.dplt(collision);
+        //si un joueur marque chez l'adversaire
+        balle.butJoueur(J1, J2, COEFF_SCORE, WINDOW_WIDTH, WINDOW_HEIGHT);
         //si la balle sort du terrain on la respawn
         balle.respawnBalle(pCheminIMGBalle, fenetre.getPRenderer(), WINDOW_WIDTH,WINDOW_HEIGHT);
 
@@ -117,11 +88,8 @@ int main(int argc, char** argv)
 
         while (SDL_PollEvent(&events))
         {
-
-
-
-            switch (events.type)
-            {
+            //GESTION DES INPUTS J1 & DE FERMETURE FENETRE
+            switch (events.type){
                 case SDL_QUIT:
                     fenetre.isOpen = SDL_FALSE;
                 break;
@@ -129,67 +97,58 @@ int main(int argc, char** argv)
                 case SDL_KEYDOWN :
                     switch (events.key.keysym.sym) {
                         case SDLK_z:
-                            J1.setControl(upJ1);
+                            J1.handleEvent(controller::up,VITESSEDEPLT,WINDOW_HEIGHT);
                         break;  
                         case SDLK_s:
-                            J1.setControl(downJ1);
+                            J1.handleEvent(controller::down, VITESSEDEPLT, WINDOW_HEIGHT);
                         break;
-                        case SDLK_UP:
-                            J2.setControl(upJ2);
-                        break;
-                        case SDLK_DOWN:
-                            J2.setControl(downJ2);
-                        break;
-                        default : 
-                            J1.setControl(none);
-                            J2.setControl(none);
+                        default:
+                            J1.handleEvent(controller::idle, VITESSEDEPLT, WINDOW_HEIGHT);
                         break;
                     }
                 break;
+
+                case SDL_MOUSEMOTION : //on ajoute une catégorie déplacement souris car par défaut elle fait bouger le joueur malgré le cas KEYDOWN
+                    J1.handleEvent(controller::idle, VITESSEDEPLT, WINDOW_HEIGHT);
+                break;
             }
 
-            if (J1.getControl()==upJ1) {
-                J1.depltHaut(VITESSEDEPLT);
-            }
-            else if (J1.getControl()==downJ1) {
-                J1.depltBas(VITESSEDEPLT,WINDOW_HEIGHT);
-            }
-            else{
-                J1.setControl(none);
-            }
+            //GESTION DES INPUTS J2
+            switch (events.type) {
+                case SDL_KEYDOWN:
+                    switch (events.key.keysym.sym) {
+                    case SDLK_UP:
+                        J2.handleEvent(controller::up, VITESSEDEPLT, WINDOW_HEIGHT);
+                        break;
+                    case SDLK_DOWN:
+                        J2.handleEvent(controller::down, VITESSEDEPLT, WINDOW_HEIGHT);
+                        break;
+                    default:
+                        J2.handleEvent(controller::idle, VITESSEDEPLT, WINDOW_HEIGHT);
+                        break;
+                    }
+                break;
 
-            if (J2.getControl() == upJ2) {
-                J2.depltHaut(VITESSEDEPLT);
-            }
-            else if (J2.getControl() == downJ2) {
-                J2.depltBas(VITESSEDEPLT,WINDOW_HEIGHT);
-            }
-            else {
-                J2.setControl(none);
-            }
+                case SDL_MOUSEMOTION: //on ajoute une catégorie déplacement souris car par défaut elle fait bouger le joueur malgré le cas KEYDOWN
+                    J2.handleEvent(controller::idle, VITESSEDEPLT, WINDOW_HEIGHT);
+                break;
+             }
 
-            /*
-            if (nb==10) {
+           // SCORE MAXIMAL ATTEIGNABLE AVT FIN DU JEU
+            if (J1.getNbScore()==MAX_SCORE || J2.getNbScore()==MAX_SCORE) {
                 fenetre.isOpen = SDL_FALSE;
             }
-            */
+            
+      
 
-       
         }
+
         fenetre.nettoyerEcran();
+
    
         frameTime = SDL_GetTicks() - frameStart;
 
-        
-
-
-
-
     } while (fenetre.isOpen);
-
-
-
-
 
 
 
@@ -198,6 +157,9 @@ int main(int argc, char** argv)
 
     //libération mémoire 
     delete[] pTitreFenetre;
+    delete[] pCheminIMG1;
+    delete[] pCheminIMG2;
+    delete[] pCheminIMGBalle;
     //les pointeurs SDL sont libérés dans le destructeur de la classe CVue
     
 

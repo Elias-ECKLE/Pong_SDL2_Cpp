@@ -9,6 +9,7 @@ CBalle::CBalle()
 
 	this->vitesseDplt = 0;
 	this->vitesseDpltVertical = 0;
+	this->collisionBalleJoueur = collider::none;
 
 	this->rectBalle= { this->position.x,this->position.y, this->taille.w, this->taille.h };
 	this->pSurfaceBalle = NULL;
@@ -25,6 +26,7 @@ CBalle::CBalle(int x, int y, int w, int h, int v)
 
 	this->vitesseDplt = v;
 	this->vitesseDpltVertical = v;
+	this->collisionBalleJoueur = collider::none;
 
 	this->rectBalle = { this->position.x,this->position.y, this->taille.w, this->taille.h };
 	this->pSurfaceBalle = NULL;
@@ -73,6 +75,11 @@ int CBalle::getHTaille()
 SDL_Rect CBalle::getRectBalle()
 {
 	return this->rectBalle;
+}
+
+collider CBalle::GetColBalleJoueur()
+{
+	return this->collisionBalleJoueur;
 }
 
 SDL_Surface* CBalle::getPSurfaceBalle()
@@ -141,54 +148,27 @@ int CBalle::respawnBalle(char* cheminIMG, SDL_Renderer* pRenderer, int nb_Window
 {
 
 	int returnError = 0;
+	int centreXBalle = this->position.x + this->taille.w / 2;
+	int centreXTerrain = nb_WindowWidth / 2 - this->taille.w / 2;
+	int centreYTerrain = nb_WindowHeight / 2 - this->taille.h / 2;
+
 	//si la balle sort du terrain alors on respawn
-	if (this->position.x+this->taille.w/2 <0 || this->position.x + this->taille.w / 2 > nb_WindowWidth) {
+	if (centreXBalle <0 || centreXBalle> nb_WindowWidth) {
 
 		returnError = this->createTexture(cheminIMG, pRenderer);
-		this->position.x = nb_WindowWidth/2-this->taille.w/2;
-		this->position.y = nb_WindowHeight / 2-this->taille.h/2;
+		this->position.x = centreXTerrain;
+		this->position.y = centreYTerrain;
 		cout << "respawn balle" << endl;
-
+		this->inversDirection();
 	}
 
 	return returnError;
 }
 
-void CBalle::dpltGauche()
-{
-	this->position.x -= this->vitesseDplt;
-	
-}
 
-void CBalle::dpltDroite()
-{
-	this->position.x += this->vitesseDplt;
-}
 
-void CBalle::dpltGauche_B()
-{
-	this->position.x -= this->vitesseDplt;
-	this->position.y += this->vitesseDpltVertical;
-}
 
-void CBalle::dpltGauche_H()
-{
-	this->position.x -= this->vitesseDplt;
-	this->position.y -= this->vitesseDpltVertical;
 
-}
-
-void CBalle::dpltDroite_B()
-{
-	this->position.x += this->vitesseDplt;
-	this->position.y += this->vitesseDpltVertical;
-}
-
-void CBalle::dpltDroite_H()
-{
-	this->position.x += this->vitesseDplt;
-	this->position.y -= this->vitesseDpltVertical;
-}
 
 void CBalle::checkLimitsBalle(int nb_windowHeight, int nb_separatePixels)
 {
@@ -200,35 +180,121 @@ void CBalle::checkLimitsBalle(int nb_windowHeight, int nb_separatePixels)
 	}
 }
 
-void CBalle::dplt(collider collision)
+
+
+collider CBalle::collision(CJoueur& joueur1, CJoueur& joueur2)
 {
-	switch (collision) {
-		case colG_H :
-			this->dpltDroite_B();
+	SDL_Rect rectBalle = this->rectBalle;
+	SDL_Rect rectJoueur1 = joueur1.getRectJoueur();
+	SDL_Rect rectJoueur2 = joueur2.getRectJoueur();
+
+	int balleYCentre = this->position.y + this->taille.h / 2;
+	int joueur1YCentre = joueur1.getYPos() + joueur1.getHTaille() / 2;
+	int joueur2YCentre = joueur2.getYPos() + joueur2.getHTaille() / 2;
+
+
+	if (SDL_HasIntersection(&rectBalle, &rectJoueur1) && !SDL_HasIntersection(&rectBalle, &rectJoueur2)) {
+
+		if (balleYCentre < joueur1YCentre && balleYCentre >= joueur1.getYPos()) {
+			this->collisionBalleJoueur = collider::col_H;
+			this->inversDirection();
+		}
+		if (balleYCentre == joueur1YCentre) {
+			this->collisionBalleJoueur = collider::col_C;
+			this->inversDirection();
+
+		}
+		if (balleYCentre > joueur1YCentre && balleYCentre <= joueur1.getYPos() + joueur1.getHTaille()) {
+			this->collisionBalleJoueur = collider::col_B;
+			this->inversDirection();
+		}
+	}
+	if (SDL_HasIntersection(&rectBalle, &rectJoueur2) && !SDL_HasIntersection(&rectBalle, &rectJoueur1) ){
+
+		if (balleYCentre < joueur2YCentre && balleYCentre >= joueur2.getYPos()) {
+			this->collisionBalleJoueur = collider::col_H;
+			this->inversDirection();
+		}
+		if (balleYCentre == joueur2YCentre) {
+			this->collisionBalleJoueur = collider::col_C;
+			this->inversDirection();
+
+		}
+		if (balleYCentre > joueur2YCentre && balleYCentre <= joueur2.getYPos() + joueur2.getHTaille()) {
+			this->collisionBalleJoueur = collider::col_B;
+			this->inversDirection();
+		}
+	}
+
+	
+	return this->collisionBalleJoueur;
+}
+
+void CBalle::dpltCollision()
+{
+	switch (this->collisionBalleJoueur) {
+		case collider::col_H :
+			this->dpltB();
+			this->dpltG_D();
+			cout << "colH" << endl;
 		break;
 
-		case colG_C :
-			this->dpltDroite();
+		case collider::col_C :
+			this->dpltG_D();
+			cout << "colC" << endl;
 		break;
 
-		case colG_B:
-			this->dpltDroite_H();
+		case collider::col_B:
+			this->dpltH();
+			this->dpltG_D();
+			cout << "colB" << endl;
 		break;
 
-
-		case colD_H:
-			this->dpltGauche_B();
+		case collider::none :
+			this->dpltG_D();
 		break;
-		
-		case colD_C:
-			this->dpltGauche();
-		break;
-
-		case colD_B:
-			this->dpltGauche_H();
-		break;
-
-
 
 	}
 }
+
+void CBalle::dpltH()
+{
+	this->position.y -= this->vitesseDpltVertical;
+	
+}
+
+void CBalle::dpltB()
+{
+	this->position.y = this->position.y + this->vitesseDpltVertical;
+}
+
+void CBalle::dpltG_D()
+{
+	this->position.x += this->vitesseDplt;
+}
+
+void CBalle::butJoueur(CJoueur& J1, CJoueur& J2, int ptScore, int nb_WindowWidth, int nb_WindowHeight)
+{
+	int returnError = 0;
+	int centreXBalle = this->position.x + this->taille.w / 2;
+	int centreXTerrain = nb_WindowWidth / 2 - this->taille.w / 2;
+	int centreYTerrain = nb_WindowHeight / 2 - this->taille.h / 2;
+
+	//si la balle sort du terrain alors on ajoute un pt à l'adversaire
+	if (centreXBalle <0) {
+		J2.addScore(ptScore);
+	}
+	if (centreXBalle > nb_WindowWidth) {
+		J1.addScore(ptScore);
+	}
+
+}
+void CBalle::inversDirection()
+{
+	//on inverse la direction de la balle (notamment à chaque collision avec un joueur :
+	this->vitesseDplt= this->vitesseDplt * -1;	
+
+}
+
+
+
