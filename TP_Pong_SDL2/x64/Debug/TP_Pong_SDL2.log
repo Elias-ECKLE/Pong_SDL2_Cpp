@@ -1,9 +1,2 @@
-﻿  CBalle.cpp
-  CJoueur.cpp
-  CText.cpp
-  The contents of <charconv> are available only with C++17 or later.
-  CVue.cpp
-  main.cpp
-D:\AlgoRacineF2\C++\Exercices\TP\TP_PongSDL2\TP_Pong_SDL2\TP_Pong_SDL2\main.cpp(36,31): warning C4244: 'argument' : conversion de 'double' en 'int', perte possible de données
-  Génération de code en cours...
+﻿  LINK : D:\AlgoRacineF2\C++\Exercices\TP\TP_PongSDL2\TP_Pong_SDL2\x64\Debug\TP_Pong_SDL2.exe introuvable ou non généré par la dernière édition de liens incrémentielle ; édition de liens complète en cours
   TP_Pong_SDL2.vcxproj -> D:\AlgoRacineF2\C++\Exercices\TP\TP_PongSDL2\TP_Pong_SDL2\x64\Debug\TP_Pong_SDL2.exe
