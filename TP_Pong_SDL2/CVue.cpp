@@ -61,6 +61,7 @@ CVue::~CVue()
         SDL_DestroyWindow(pWindow);
     }
 
+    TTF_Quit();
     IMG_Quit();
     SDL_Quit();
     cout << "Destruction CVue faite" << endl;
@@ -165,6 +166,16 @@ int CVue::SDL_InitImg()
     }
 
     return 0;
+}
+
+int CVue::SDL_InitText()
+{
+    if (TTF_Init()==-1) {
+        SDL_Log("TEXT_Init:Failed to init ttf!\n");
+        return -1;
+    }
+    return 0;
+    
 }
 
 

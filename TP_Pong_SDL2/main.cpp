@@ -2,6 +2,7 @@
 #include "CVue.h"
 #include "CJoueur.h"
 #include "CBalle.h"
+#include "CText.h"
 
 
 using namespace std;
@@ -15,10 +16,25 @@ int main(int argc, char** argv)
     CVue fenetre(WINDOW_HEIGHT,WINDOW_WIDTH,SEPARATE_PIXELS, FPS, MS);
     fenetre.SDL_Inits();
     fenetre.SDL_InitImg();
+    fenetre.SDL_InitText();
     /* Création de la fenêtre */ //on utilisée la version surchagée de fenetre afin d'ajouter un titre 
     char* pTitreFenetre = new char[TAILLE];
     strcpy_s(pTitreFenetre, TAILLE, TITRE_FENETRE);
-    fenetre.createWindow(pTitreFenetre);    
+    fenetre.createWindow(pTitreFenetre);   
+
+
+    //______________________________________GENERATION TEXTE_______________________________________
+    char* pCheminPoliceTexte = new char[TAILLE];
+    strcpy_s(pCheminPoliceTexte, TAILLE, CHEMIN_POLICE_TEXT);
+    char* pTexte = new char[TAILLE];
+    strcpy_s(pTexte, TAILLE, "Hello World!");
+
+    //texte J1
+    int WINDOW_X = WINDOW_WIDTH / 2;
+    CText ScoreJ1(WINDOW_X/2,10,WIDTH_TEXTE,HEIGHT_TEXTE);
+    //texte J2
+    CText ScoreJ2(WINDOW_WIDTH*0.75, 10, WIDTH_TEXTE, HEIGHT_TEXTE);
+
    
     
     //_______________________________GENERATIONS DES DEUX JOUEURS__________________________________
@@ -37,6 +53,7 @@ int main(int argc, char** argv)
     strcpy_s(pCheminIMG2, TAILLE, CHEMIN_SPRITE_JOUEUR2);
 
 
+
     //_________________________________GENERATION DE LA BALLE______________________________________
     CBalle balle(WINDOW_WIDTH / 2 - WIDTHBALLE / 2, WINDOW_HEIGHT / 2, WIDTHBALLE, HEIGHTBALLE, VITESSE_BALLE);
 
@@ -46,11 +63,6 @@ int main(int argc, char** argv)
 
 
     
-
-
-
-
-
 
     //_____________________________________BOUCLE DE JEU___________________________________________
     SDL_Event events;
@@ -63,35 +75,39 @@ int main(int argc, char** argv)
     {
         frameStart = SDL_GetTicks();
 
+
+        //Affichage :
         fenetre.createTerrain();
         J1.createTexture(pCheminIMG1, fenetre.getPRenderer());
         J2.createTexture(pCheminIMG2, fenetre.getPRenderer());
-
         balle.createTexture(pCheminIMGBalle, fenetre.getPRenderer());
+        ScoreJ1.createTexture(pCheminPoliceTexte, J1.getNbScore(), TAILLE_POLICE, R_COLOR, G_COLOR, B_COLOR, A_OPACITY, fenetre.getPRenderer());
+        ScoreJ2.createTexture(pCheminPoliceTexte, J2.getNbScore(), TAILLE_POLICE, R_COLOR, G_COLOR, B_COLOR, A_OPACITY, fenetre.getPRenderer());
 
 
+        //Gestion des mécaniques :
         //on regarde s'il y a une collision 
         balle.collision(J1, J2);
         //selon le résultat on déplace la balle et on check si la balle n'atteint pas les deux bords horizontaux, si oui on inverse sa diretion sur l'axe vertical
         balle.checkLimitsBalle(WINDOW_HEIGHT, SEPARATE_PIXELS_LIMITS);
         balle.dpltCollision();
-
         //si un joueur marque chez l'adversaire
         balle.butJoueur(J1, J2, COEFF_SCORE, WINDOW_WIDTH, WINDOW_HEIGHT);
         //si la balle sort du terrain on la respawn
         balle.respawnBalle(pCheminIMGBalle, fenetre.getPRenderer(), WINDOW_WIDTH,WINDOW_HEIGHT);
 
 
-
-
+        //enfin on affiche les modifs 
         fenetre.affichRendu();
 
+
+        //boucle d'événments afin de gérer l'ensemble des inputs sdl
         while (SDL_PollEvent(&events))
         {
             //GESTION DES INPUTS J1 & DE FERMETURE FENETRE
             switch (events.type){
                 case SDL_QUIT:
-                    fenetre.isOpen = SDL_FALSE;
+                    fenetre.setIsOpen(SDL_FALSE);
                 break;
 
                 case SDL_KEYDOWN :
@@ -128,7 +144,6 @@ int main(int argc, char** argv)
                         break;
                     }
                 break;
-
                 case SDL_MOUSEMOTION: //on ajoute une catégorie déplacement souris car par défaut elle fait bouger le joueur malgré le cas KEYDOWN
                     J2.handleEvent(controller::idle, VITESSEDEPLT, WINDOW_HEIGHT);
                 break;
@@ -136,19 +151,17 @@ int main(int argc, char** argv)
 
            // SCORE MAXIMAL ATTEIGNABLE AVT FIN DU JEU
             if (J1.getNbScore()==MAX_SCORE || J2.getNbScore()==MAX_SCORE) {
-                fenetre.isOpen = SDL_FALSE;
+                fenetre.setIsOpen(SDL_FALSE);
             }
             
-      
-
         }
 
-        fenetre.nettoyerEcran();
+        //SDL_Delay(MS / FPS);
 
-   
+        fenetre.nettoyerEcran();
         frameTime = SDL_GetTicks() - frameStart;
 
-    } while (fenetre.isOpen);
+    } while (fenetre.getIsOpen());
 
 
 
@@ -160,6 +173,8 @@ int main(int argc, char** argv)
     delete[] pCheminIMG1;
     delete[] pCheminIMG2;
     delete[] pCheminIMGBalle;
+    delete[] pTexte;
+    delete[] pCheminPoliceTexte;
     //les pointeurs SDL sont libérés dans le destructeur de la classe CVue
     
 

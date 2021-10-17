@@ -3,7 +3,11 @@
 #include <stdio.h>
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
+#include <string.h>
 
+
+//____________________________________________________________________RESSOURCES_____________________________________________________________________
 //__________________________________________________DEFINITION DE TOUTES LES INFORMATIONS MODIFIABLES _________________________________________________
 
 // affichage écran 1000x600
@@ -26,6 +30,7 @@
 #define CHEMIN_SPRITE_JOUEUR1 "../Images/barreJ1.png"
 #define CHEMIN_SPRITE_JOUEUR2 "../Images/barreJ2.png"
 #define CHEMIN_SPRITE_BALLE "../Images/balle.png"
+#define CHEMIN_POLICE_TEXT "../Text/zen-dots/ZenDots-Regular.ttf"
 
 //taille des sprites joueur :
 #define WIDTHJOUEUR 31
@@ -39,7 +44,20 @@
 
 
 // taille pour allouer de l'espace à des chaînes de caractères déclarés sous forme de char*
-#define TAILLE 30 
+#define TAILLE 45
+
+
+
+//taille police :
+#define TAILLE_POLICE 9
+#define WIDTH_TEXTE 20
+#define HEIGHT_TEXTE 40
+//couleur du texte :
+#define R_COLOR 255
+#define G_COLOR 255
+#define B_COLOR 255
+#define A_OPACITY 255
+
 
 
 
