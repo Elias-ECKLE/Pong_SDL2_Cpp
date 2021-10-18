@@ -68,6 +68,7 @@ public:
 	void depltBas(int vitesse,int nb_WindowHeight);
 	
 	void addScore(int ptScore);
+	//void respawnJoueur(int x, int y, CBalle &balle);
 
 	
 

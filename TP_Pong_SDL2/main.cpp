@@ -41,14 +41,11 @@ int main(int argc, char** argv)
     
     // J1
     CJoueur J1(SEPARATE_BORDSJ1, WINDOW_HEIGHT / 2 - HEIGHTJOUEUR / 2, WIDTHJOUEUR, HEIGHTJOUEUR);
-
     char* pCheminIMG1 = new char[TAILLE];
     strcpy_s(pCheminIMG1, TAILLE, CHEMIN_SPRITE_JOUEUR1);
  
-
     //J2
     CJoueur J2(WINDOW_WIDTH-SEPARATE_BORDSJ2,WINDOW_HEIGHT / 2-HEIGHTJOUEUR/2, WIDTHJOUEUR, HEIGHTJOUEUR);
-
     char* pCheminIMG2 = new char[TAILLE];
     strcpy_s(pCheminIMG2, TAILLE, CHEMIN_SPRITE_JOUEUR2);
 
@@ -56,7 +53,6 @@ int main(int argc, char** argv)
 
     //_________________________________GENERATION DE LA BALLE______________________________________
     CBalle balle(WINDOW_WIDTH / 2 - WIDTHBALLE / 2, WINDOW_HEIGHT / 2, WIDTHBALLE, HEIGHTBALLE, VITESSE_BALLE);
-
     char* pCheminIMGBalle = new char[TAILLE];
     strcpy_s(pCheminIMGBalle, TAILLE, CHEMIN_SPRITE_BALLE);
 
@@ -95,6 +91,9 @@ int main(int argc, char** argv)
         balle.butJoueur(J1, J2, COEFF_SCORE, WINDOW_WIDTH, WINDOW_HEIGHT);
         //si la balle sort du terrain on la respawn
         balle.respawnBalle(pCheminIMGBalle, fenetre.getPRenderer(), WINDOW_WIDTH,WINDOW_HEIGHT);
+        //et on replace les joueurs au centre :
+        //J1.respawnJoueur(SEPARATE_BORDSJ1, WINDOW_HEIGHT / 2 - HEIGHTJOUEUR / 2);
+        //J2.respawnJoueur(WINDOW_WIDTH - SEPARATE_BORDSJ2, WINDOW_HEIGHT / 2 - HEIGHTJOUEUR / 2);
 
 
         //enfin on affiche les modifs 
@@ -155,6 +154,7 @@ int main(int argc, char** argv)
             }
             
         }
+
 
         //SDL_Delay(MS / FPS);
 
