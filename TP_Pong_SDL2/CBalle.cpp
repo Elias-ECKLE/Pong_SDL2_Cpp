@@ -7,8 +7,8 @@ CBalle::CBalle()
 	this->taille.w = 0;
 	this->taille.h = 0;
 
-	this->vitesseDplt = 0;
-	this->vitesseDpltVertical = 0;
+	this->vitesseDpltX = 0;
+	this->vitesseDpltY = 0;
 	this->collisionBalleJoueur = collider::none;
 	this->pCheminIMGBalle = NULL;
 
@@ -25,8 +25,8 @@ CBalle::CBalle(int x, int y, int w, int h, int v, char* pCheminIMGBalle)
 	this->taille.w = w;
 	this->taille.h = h;
 
-	this->vitesseDplt = v;
-	this->vitesseDpltVertical = v;
+	this->vitesseDpltX = v;
+	this->vitesseDpltY = v;
 	this->collisionBalleJoueur = collider::none;
 	this->pCheminIMGBalle = pCheminIMGBalle;
 
@@ -176,105 +176,52 @@ int CBalle::respawnBalle(SDL_Renderer* pRenderer, int nb_WindowWidth, int nb_Win
 void CBalle::checkLimitsBalle(int nb_windowHeight, int nb_separatePixels)
 {
 	if (this->position.y <= 0) {
-		this->vitesseDpltVertical = this->vitesseDpltVertical * -1;
+		this->vitesseDpltY = this->vitesseDpltY * -1;
 	}
 	if (this->position.y>=nb_windowHeight-nb_separatePixels) {
-		this->vitesseDpltVertical = this->vitesseDpltVertical * -1;
+		this->vitesseDpltY = this->vitesseDpltY * -1;
 	}
 }
 
 
 
-collider CBalle::collision(CJoueur* joueur1, CJoueur* joueur2)
+collider CBalle::dpltBalle(CJoueur* joueur)
 {
 	SDL_Rect rectBalle = this->rectBalle;
-	SDL_Rect rectJoueur1 = joueur1->getRectJoueur();
-	SDL_Rect rectJoueur2 = joueur2->getRectJoueur();
+	SDL_Rect rectJoueur = joueur->getRectJoueur();
 
 	int balleYCentre = this->position.y + this->taille.h / 2;
-	int joueur1YCentre = joueur1->getYPos() + joueur1->getHTaille() / 2;
-	int joueur2YCentre = joueur2->getYPos() + joueur2->getHTaille() / 2;
+	int joueurYCentre = joueur->getYPos() + joueur->getHTaille() / 2;
+	//int joueur2YCentre = joueur2->getYPos() + joueur2->getHTaille() / 2;
 
+	if (this->position.x >= joueur->getXPos() && this->position.x <= joueur->getXPos() + joueur->getWTaille() && this->position.y >= joueur->getYPos() && this->position.y <= joueur->getYPos() + joueur->getHTaille()) { //si collision alors 
 
-	if (SDL_HasIntersection(&rectBalle, &rectJoueur1) && !SDL_HasIntersection(&rectBalle, &rectJoueur2)) {
-
-		if (balleYCentre < joueur1YCentre && balleYCentre >= joueur1->getYPos()) {
-			this->collisionBalleJoueur = collider::col_H;
-			this->inversDirection();
-		}
-		if (balleYCentre == joueur1YCentre) {
-			this->collisionBalleJoueur = collider::col_C;
-			this->inversDirection();
-
-		}
-		if (balleYCentre > joueur1YCentre && balleYCentre <= joueur1->getYPos() + joueur1->getHTaille()) {
-			this->collisionBalleJoueur = collider::col_B;
-			this->inversDirection();
-		}
+		dpltX();
+		dpltY();
+		int d = joueurYCentre - this->position.y; //distance entre le centre du paddle et l'impact de la balle dessus
+		this->vitesseDpltX += d * 0.1;
+		this->inversDirection();
 	}
-	if (SDL_HasIntersection(&rectBalle, &rectJoueur2) && !SDL_HasIntersection(&rectBalle, &rectJoueur1) ){
-
-		if (balleYCentre < joueur2YCentre && balleYCentre >= joueur2->getYPos()) {
-			this->collisionBalleJoueur = collider::col_H;
-			this->inversDirection();
-		}
-		if (balleYCentre == joueur2YCentre) {
-			this->collisionBalleJoueur = collider::col_C;
-			this->inversDirection();
-
-		}
-		if (balleYCentre > joueur2YCentre && balleYCentre <= joueur2->getYPos() + joueur2->getHTaille()) {
-			this->collisionBalleJoueur = collider::col_B;
-			this->inversDirection();
-		}
+	else {
+		dpltX();
 	}
+
 
 	
 	return this->collisionBalleJoueur;
 }
 
-void CBalle::dpltCollision()
+void CBalle::dpltX()
 {
-	switch (this->collisionBalleJoueur) {
-		case collider::col_H :
-			this->dpltB();
-			this->dpltG_D();
-			cout << "colH" << endl;
-		break;
-
-		case collider::col_C :
-			this->dpltG_D();
-			cout << "colC" << endl;
-		break;
-
-		case collider::col_B:
-			this->dpltH();
-			this->dpltG_D();
-			cout << "colB" << endl;
-		break;
-
-		case collider::none :
-			this->dpltG_D();
-		break;
-
-	}
+	this->position.x += this->vitesseDpltX;
 }
 
-void CBalle::dpltH()
+void CBalle::dpltY()
 {
-	this->position.y -= this->vitesseDpltVertical;
-	
+	this->position.y += this->vitesseDpltY;
 }
 
-void CBalle::dpltB()
-{
-	this->position.y = this->position.y + this->vitesseDpltVertical;
-}
 
-void CBalle::dpltG_D()
-{
-	this->position.x += this->vitesseDplt;
-}
 
 void CBalle::butJoueur(CJoueur* J1, CJoueur* J2, int ptScore, int nb_WindowWidth, int nb_WindowHeight)
 {
@@ -295,7 +242,7 @@ void CBalle::butJoueur(CJoueur* J1, CJoueur* J2, int ptScore, int nb_WindowWidth
 void CBalle::inversDirection()
 {
 	//on inverse la direction de la balle (notamment à chaque collision avec un joueur :
-	this->vitesseDplt= this->vitesseDplt * -1;	
+	this->vitesseDpltX= this->vitesseDpltX * -1;	
 
 }
 

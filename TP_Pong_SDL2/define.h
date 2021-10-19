@@ -20,7 +20,7 @@ using namespace std;
 
 //MAX SCORE 
 #define MAX_SCORE 12
-#define COEFF_SCORE 1
+#define COEFF_SCORE 1 //valeur d'incrémentation à chaque pt marqué
 
 //FPS 
 #define FPS 60
@@ -41,8 +41,8 @@ using namespace std;
 #define HEIGHTJOUEUR 98
 #define SEPARATE_BORDSJ1 20
 #define SEPARATE_BORDSJ2 43
-#define VITESSEDEPLT 15
-#define VITESSE_BALLE 4
+#define VITESSEDEPLT 35
+#define VITESSE_BALLE 3
 #define WIDTHBALLE 15
 #define HEIGHTBALLE 15
 

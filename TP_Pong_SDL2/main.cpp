@@ -52,8 +52,6 @@ int main(int argc, char** argv)
     //____________________________________________BOUCLE DE JEU___________________________________________
     
 
-    //int nb = 1;
-    balle.inversDirection();
 
     do
     {
@@ -163,10 +161,11 @@ int update(CVue* fenetre, CJoueur* J1, CJoueur* J2, CBalle* balle) {
 
     //Gestion des mécaniques :
        //on regarde s'il y a une collision 
-    balle->collision(J1, J2);
+    balle->dpltBalle(J1);
+    balle->dpltBalle(J2);
     //selon le résultat on déplace la balle et on check si la balle n'atteint pas les deux bords horizontaux, si oui on inverse sa diretion sur l'axe vertical
     balle->checkLimitsBalle(WINDOW_HEIGHT, SEPARATE_PIXELS_LIMITS);
-    balle->dpltCollision();
+    //balle->dpltCollision();
     //si un joueur marque chez l'adversaire
     balle->butJoueur(J1, J2, COEFF_SCORE, WINDOW_WIDTH, WINDOW_HEIGHT);
     //si la balle sort du terrain on la respawn

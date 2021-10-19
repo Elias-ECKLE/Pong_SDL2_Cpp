@@ -12,8 +12,8 @@ private :
 protected:
 
 
-	int vitesseDplt;
-	int vitesseDpltVertical;
+	int vitesseDpltX;
+	int vitesseDpltY;
 	char* pCheminIMGBalle;
 
 	coords position;
@@ -58,13 +58,12 @@ public:
 	int createTexture(SDL_Renderer* pRenderer);
 
 
-	collider collision(CJoueur* joueur1, CJoueur* joueur2);
-	void dpltCollision();
+	collider dpltBalle(CJoueur* joueur);
+	void dpltX();
+	void dpltY();
 	void inversDirection();
 	void checkLimitsBalle(int nb_windowHeight, int nb_separatePixels);
-	void dpltB();
-	void dpltH();
-	void dpltG_D();
+
 
 	void butJoueur(CJoueur* J1, CJoueur* J2, int ptScore, int nb_WindowWidth, int nb_WindowHeight);
 	int respawnBalle(SDL_Renderer* pRenderer, int nb_WindowWidth, int nb_WindowHeight);
