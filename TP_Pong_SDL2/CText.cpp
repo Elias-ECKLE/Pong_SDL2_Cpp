@@ -8,19 +8,22 @@ CText::CText()
 	this->taille.w = 0;
 	this->taille.h = 0;
 
+	this->pCheminText = NULL;
+
 	this->pFont = NULL;
 	this->pText = NULL;
 	this->pSurfaceText = NULL;
 	this->rectText = { this->position.x,this->position.y, this->taille.w, this->taille.h };
 }
 
-CText::CText(int x, int y, int w, int h)
+CText::CText(int x, int y, int w, int h, char* pCheminText)
 {
 	this->position.x = x;
 	this->position.y = y;
 	this->taille.w = w;
 	this->taille.h = h;
 
+	this->pCheminText = pCheminText;
 	this->pFont = NULL;
 	this->pText = NULL;
 	this->pSurfaceText = NULL;
@@ -87,7 +90,7 @@ void CText::setRectText(SDL_Rect rect)
 	this->rectText = rect;
 }
 
-int CText::createTexture(const char* cheminPolice, int nbScore, int taillePolice, Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_Renderer* pRenderer)
+int CText::createTexture(int nbScore, int taillePolice, Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_Renderer* pRenderer)
 {
 
 	char num_char[10 + sizeof(char)];
@@ -95,7 +98,7 @@ int CText::createTexture(const char* cheminPolice, int nbScore, int taillePolice
 	//std::printf("num_char: %s \n", num_char);
 
 	SDL_Color color = { r, g, b};
-	this->pFont = TTF_OpenFont(cheminPolice,taillePolice);
+	this->pFont = TTF_OpenFont(this->pCheminText,taillePolice);
 	this->pSurfaceText = TTF_RenderText_Solid(pFont, num_char, color);
 
 	if (pFont==nullptr) {

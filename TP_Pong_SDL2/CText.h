@@ -6,6 +6,7 @@ class CText {
 private:
 
 protected:
+	char* pCheminText;
 
 	coords position;
 	dimensions taille;
@@ -19,7 +20,7 @@ public:
 
 	//constructeur destructeur
 	CText();
-	CText(int x, int y, int w, int h);
+	CText(int x, int y, int w, int h, char* pCheminText);
 	~CText();
 
 	//accesseurs 
@@ -38,7 +39,7 @@ public:
 
 
 	//methodes
-	int createTexture(const char* cheminPolice, int scoreJoueur, int taillePolice, Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_Renderer* pRenderer);
+	int createTexture(int scoreJoueur, int taillePolice, Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_Renderer* pRenderer);
 
 
 

@@ -13,6 +13,8 @@ private:
 protected:
 
 	int nb_score;
+	const char* pCheminJoueur;
+
 	coords position;
 	dimensions taille;
 	controller control;
@@ -29,7 +31,7 @@ public:
 
 	//constructeur :
 	CJoueur();
-	CJoueur(int x, int y, int w, int h);
+	CJoueur(int x, int y, int w, int h, char* pCheminJoueur);
 
 	//constructeur de copie :
 	CJoueur(CJoueur& joueur);
@@ -62,7 +64,7 @@ public:
 
 
 	//methodes :
-	int createTexture(char* cheminIMG, SDL_Renderer* pRenderer);
+	int createTexture(SDL_Renderer* pRenderer);
 	void handleEvent(controller controls,int vitesse, int nb_WindowHeight);
 	void depltHaut(int vitesse);
 	void depltBas(int vitesse,int nb_WindowHeight);

@@ -9,6 +9,7 @@ CJoueur::CJoueur()
 	this->taille.w = 0;
 	this->taille.h = 0;
 	this->control = controller::idle;
+	this->pCheminJoueur = NULL;
 	//this->collisionJoueurBalle = collider::none;
 
 	this->rectJoueur = { this->position.x,this->position.y, this->taille.w, this->taille.h };
@@ -16,7 +17,7 @@ CJoueur::CJoueur()
 	this->pTextureJoueur = NULL;
 }
 
-CJoueur::CJoueur(int x, int y, int w, int h)
+CJoueur::CJoueur(int x, int y, int w, int h, char* pCheminJoueur)
 {
 	this->nb_score = 0;
 	this->position.x = x;
@@ -25,6 +26,7 @@ CJoueur::CJoueur(int x, int y, int w, int h)
 	this->taille.w = w;
 	this->taille.h = h;
 	this->control = controller::idle;
+	this->pCheminJoueur = pCheminJoueur;
 	//this->collisionJoueurBalle = collider::none;
 
 	this->rectJoueur = { this->position.x,this->position.y, this->taille.w, this->taille.h };
@@ -41,6 +43,7 @@ CJoueur::CJoueur(CJoueur& joueur)
 	this->taille.w = joueur.taille.w;
 	this->taille.h = joueur.taille.h;
 	this->control=joueur.control;
+	this->pCheminJoueur = joueur.pCheminJoueur;
 
 	this->rectJoueur = joueur.rectJoueur;
 	this->pSurfaceJoueur = joueur.pSurfaceJoueur;
@@ -151,9 +154,9 @@ void CJoueur::setPTextureJoueur(SDL_Texture* textureJ)
 
 
 
-int CJoueur::createTexture(char* cheminIMG, SDL_Renderer* pRenderer)
+int CJoueur::createTexture(SDL_Renderer* pRenderer)
 {
-	this->pSurfaceJoueur = IMG_Load(cheminIMG);
+	this->pSurfaceJoueur = IMG_Load(this->pCheminJoueur);
 
 	if (!this->pSurfaceJoueur) {
 		SDL_Log("Unable to set surface: %s", SDL_GetError());
@@ -164,7 +167,7 @@ int CJoueur::createTexture(char* cheminIMG, SDL_Renderer* pRenderer)
 		SDL_FreeSurface(this->pSurfaceJoueur);
 
 		if (!this->pTextureJoueur) {
-			SDL_Log("Unable SDL_CreatetextureFromSurface %s", SDL_GetError());
+			SDL_Log("Unable SDL_CreatetextureFromSurface_Joueur %s", SDL_GetError());
 			return 1;
 		}
 	}

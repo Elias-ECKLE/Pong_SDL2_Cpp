@@ -7,11 +7,6 @@ class CVue {
 
 
 
-private:
-	
-
-
-
 protected:
 	int nb_windowHeight;
 	int nb_windowWidth;
@@ -20,6 +15,7 @@ protected:
 	int nb_fps;
 	int nb_frameDelay;
 
+	
 	SDL_bool isOpen;
 	SDL_Window* pWindow; //pointeur pointant sur paramètres window
 	SDL_Renderer* pRenderer;//pointeur pointant sur paramètres renderer
@@ -27,6 +23,9 @@ protected:
 
 
 public:
+	SDL_Event events;
+
+
 	//constructeurs
 	CVue();
 	CVue(int nb_windowHeight, int nb_windowWidth, int nb_SeparatPixels, int nb_fps, int nb_ms);

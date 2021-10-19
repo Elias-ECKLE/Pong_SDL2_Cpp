@@ -11,6 +11,7 @@ CVue::CVue()
     this->nb_windowHeight = this->nb_windowWidth;
     this->nb_separationPixels = 1;
 
+  
     this->nb_fps = 60;
     this->nb_frameDelay = 1000 / FPS;
     this->beginPlay = false;

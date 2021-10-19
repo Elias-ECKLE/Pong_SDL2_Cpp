@@ -10,6 +10,7 @@ CBalle::CBalle()
 	this->vitesseDplt = 0;
 	this->vitesseDpltVertical = 0;
 	this->collisionBalleJoueur = collider::none;
+	this->pCheminIMGBalle = NULL;
 
 	this->rectBalle= { this->position.x,this->position.y, this->taille.w, this->taille.h };
 	this->pSurfaceBalle = NULL;
@@ -17,7 +18,7 @@ CBalle::CBalle()
 
 }
 
-CBalle::CBalle(int x, int y, int w, int h, int v)
+CBalle::CBalle(int x, int y, int w, int h, int v, char* pCheminIMGBalle)
 {
 	this->position.x = x;
 	this->position.y = y;
@@ -27,6 +28,7 @@ CBalle::CBalle(int x, int y, int w, int h, int v)
 	this->vitesseDplt = v;
 	this->vitesseDpltVertical = v;
 	this->collisionBalleJoueur = collider::none;
+	this->pCheminIMGBalle = pCheminIMGBalle;
 
 	this->rectBalle = { this->position.x,this->position.y, this->taille.w, this->taille.h };
 	this->pSurfaceBalle = NULL;
@@ -39,6 +41,7 @@ CBalle::~CBalle()
 		SDL_FreeSurface(this->pSurfaceBalle);
 		SDL_DestroyTexture(this->pTextureBalle);
 	}
+
 	cout << "Destruction CJoueur faite" << endl;
 }
 
@@ -121,9 +124,9 @@ void CBalle::setPTextureBalle(SDL_Texture* texture)
 
 
 
-int CBalle::createTexture(char* cheminIMG, SDL_Renderer* pRenderer)
+int CBalle::createTexture(SDL_Renderer* pRenderer)
 {
-	this->pSurfaceBalle = IMG_Load(cheminIMG);
+	this->pSurfaceBalle = IMG_Load(this->pCheminIMGBalle);
 
 	if (!this->pSurfaceBalle) {
 		SDL_Log("Unable to set surface: %s", SDL_GetError());
@@ -133,7 +136,7 @@ int CBalle::createTexture(char* cheminIMG, SDL_Renderer* pRenderer)
 		this->pTextureBalle = SDL_CreateTextureFromSurface(pRenderer, pSurfaceBalle);
 
 		if (!this->pTextureBalle) {
-			SDL_Log("Unable SDL_CreatetextureFromSurface %s", SDL_GetError());
+			SDL_Log("Unable SDL_CreatetextureFromSurface_Balle %s", SDL_GetError());
 			return 1;
 		}
 	}
@@ -144,7 +147,7 @@ int CBalle::createTexture(char* cheminIMG, SDL_Renderer* pRenderer)
 	return 0;
 }
 
-int CBalle::respawnBalle(char* cheminIMG, SDL_Renderer* pRenderer, int nb_WindowWidth, int nb_WindowHeight)
+int CBalle::respawnBalle(SDL_Renderer* pRenderer, int nb_WindowWidth, int nb_WindowHeight)
 {
 
 	int returnError = 0;
@@ -155,7 +158,7 @@ int CBalle::respawnBalle(char* cheminIMG, SDL_Renderer* pRenderer, int nb_Window
 	//si la balle sort du terrain alors on respawn
 	if (centreXBalle <0 || centreXBalle> nb_WindowWidth) {
 
-		returnError = this->createTexture(cheminIMG, pRenderer);
+		returnError = this->createTexture(pRenderer);
 		this->position.x = centreXTerrain;
 		this->position.y = centreYTerrain;
 		cout << "respawn balle" << endl;
@@ -182,20 +185,20 @@ void CBalle::checkLimitsBalle(int nb_windowHeight, int nb_separatePixels)
 
 
 
-collider CBalle::collision(CJoueur& joueur1, CJoueur& joueur2)
+collider CBalle::collision(CJoueur* joueur1, CJoueur* joueur2)
 {
 	SDL_Rect rectBalle = this->rectBalle;
-	SDL_Rect rectJoueur1 = joueur1.getRectJoueur();
-	SDL_Rect rectJoueur2 = joueur2.getRectJoueur();
+	SDL_Rect rectJoueur1 = joueur1->getRectJoueur();
+	SDL_Rect rectJoueur2 = joueur2->getRectJoueur();
 
 	int balleYCentre = this->position.y + this->taille.h / 2;
-	int joueur1YCentre = joueur1.getYPos() + joueur1.getHTaille() / 2;
-	int joueur2YCentre = joueur2.getYPos() + joueur2.getHTaille() / 2;
+	int joueur1YCentre = joueur1->getYPos() + joueur1->getHTaille() / 2;
+	int joueur2YCentre = joueur2->getYPos() + joueur2->getHTaille() / 2;
 
 
 	if (SDL_HasIntersection(&rectBalle, &rectJoueur1) && !SDL_HasIntersection(&rectBalle, &rectJoueur2)) {
 
-		if (balleYCentre < joueur1YCentre && balleYCentre >= joueur1.getYPos()) {
+		if (balleYCentre < joueur1YCentre && balleYCentre >= joueur1->getYPos()) {
 			this->collisionBalleJoueur = collider::col_H;
 			this->inversDirection();
 		}
@@ -204,14 +207,14 @@ collider CBalle::collision(CJoueur& joueur1, CJoueur& joueur2)
 			this->inversDirection();
 
 		}
-		if (balleYCentre > joueur1YCentre && balleYCentre <= joueur1.getYPos() + joueur1.getHTaille()) {
+		if (balleYCentre > joueur1YCentre && balleYCentre <= joueur1->getYPos() + joueur1->getHTaille()) {
 			this->collisionBalleJoueur = collider::col_B;
 			this->inversDirection();
 		}
 	}
 	if (SDL_HasIntersection(&rectBalle, &rectJoueur2) && !SDL_HasIntersection(&rectBalle, &rectJoueur1) ){
 
-		if (balleYCentre < joueur2YCentre && balleYCentre >= joueur2.getYPos()) {
+		if (balleYCentre < joueur2YCentre && balleYCentre >= joueur2->getYPos()) {
 			this->collisionBalleJoueur = collider::col_H;
 			this->inversDirection();
 		}
@@ -220,7 +223,7 @@ collider CBalle::collision(CJoueur& joueur1, CJoueur& joueur2)
 			this->inversDirection();
 
 		}
-		if (balleYCentre > joueur2YCentre && balleYCentre <= joueur2.getYPos() + joueur2.getHTaille()) {
+		if (balleYCentre > joueur2YCentre && balleYCentre <= joueur2->getYPos() + joueur2->getHTaille()) {
 			this->collisionBalleJoueur = collider::col_B;
 			this->inversDirection();
 		}
@@ -273,7 +276,7 @@ void CBalle::dpltG_D()
 	this->position.x += this->vitesseDplt;
 }
 
-void CBalle::butJoueur(CJoueur& J1, CJoueur& J2, int ptScore, int nb_WindowWidth, int nb_WindowHeight)
+void CBalle::butJoueur(CJoueur* J1, CJoueur* J2, int ptScore, int nb_WindowWidth, int nb_WindowHeight)
 {
 	int returnError = 0;
 	int centreXBalle = this->position.x + this->taille.w / 2;
@@ -282,10 +285,10 @@ void CBalle::butJoueur(CJoueur& J1, CJoueur& J2, int ptScore, int nb_WindowWidth
 
 	//si la balle sort du terrain alors on ajoute un pt à l'adversaire
 	if (centreXBalle <0) {
-		J2.addScore(ptScore);
+		J2->addScore(ptScore);
 	}
 	if (centreXBalle > nb_WindowWidth) {
-		J1.addScore(ptScore);
+		J1->addScore(ptScore);
 	}
 
 }

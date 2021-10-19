@@ -7,6 +7,10 @@
 #include <string.h>
 
 
+
+
+using namespace std;
+
 //____________________________________________________________________RESSOURCES_____________________________________________________________________
 //__________________________________________________DEFINITION DE TOUTES LES INFORMATIONS MODIFIABLES _________________________________________________
 
@@ -38,15 +42,13 @@
 #define SEPARATE_BORDSJ1 20
 #define SEPARATE_BORDSJ2 43
 #define VITESSEDEPLT 15
-#define VITESSE_BALLE 2
+#define VITESSE_BALLE 4
 #define WIDTHBALLE 15
 #define HEIGHTBALLE 15
 
 
 // taille pour allouer de l'espace à des chaînes de caractères déclarés sous forme de char*
 #define TAILLE 45
-
-
 
 //taille police :
 #define TAILLE_POLICE 9
@@ -57,9 +59,6 @@
 #define G_COLOR 255
 #define B_COLOR 255
 #define A_OPACITY 255
-
-
-
 
 
 //__________________________________________________________STRUCTURES ET ENUMERATIONS____________________________________________________________
@@ -77,3 +76,4 @@ typedef struct dimensions {
 enum class controller { up = 1, down=2, idle=0 };
 
 enum class collider {col_H = 1 ,col_C, col_B, none=0};
+

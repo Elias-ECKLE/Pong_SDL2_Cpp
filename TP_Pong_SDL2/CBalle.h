@@ -14,6 +14,7 @@ protected:
 
 	int vitesseDplt;
 	int vitesseDpltVertical;
+	char* pCheminIMGBalle;
 
 	coords position;
 	dimensions taille;
@@ -28,7 +29,7 @@ public:
 
 	//constructeur :
 	CBalle();
-	CBalle(int x, int y, int w, int h,int v);
+	CBalle(int x, int y, int w, int h,int v,char* pCHeminIMGBalle);
 	
 	~CBalle();
 
@@ -54,10 +55,10 @@ public:
 
 
 	//methodes :
-	int createTexture(char* cheminIMG, SDL_Renderer* pRenderer);
+	int createTexture(SDL_Renderer* pRenderer);
 
 
-	collider collision(CJoueur& joueur1, CJoueur& joueur2);
+	collider collision(CJoueur* joueur1, CJoueur* joueur2);
 	void dpltCollision();
 	void inversDirection();
 	void checkLimitsBalle(int nb_windowHeight, int nb_separatePixels);
@@ -65,8 +66,8 @@ public:
 	void dpltH();
 	void dpltG_D();
 
-	void butJoueur(CJoueur& J1, CJoueur& J2, int ptScore, int nb_WindowWidth, int nb_WindowHeight);
-	int respawnBalle(char* cheminIMG, SDL_Renderer* pRenderer, int nb_WindowWidth, int nb_WindowHeight);
+	void butJoueur(CJoueur* J1, CJoueur* J2, int ptScore, int nb_WindowWidth, int nb_WindowHeight);
+	int respawnBalle(SDL_Renderer* pRenderer, int nb_WindowWidth, int nb_WindowHeight);
 
 
 	
